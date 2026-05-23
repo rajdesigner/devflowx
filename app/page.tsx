@@ -1,5 +1,5 @@
 const page = () => {
-  return <div className="text-5xl">Welcome to Next.JS Application.</div>;
+  return <div className="text-5xl"></div>;
 };
 
 export default page;

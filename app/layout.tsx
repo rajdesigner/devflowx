@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
+import { cn } from "@/lib/utils";
+import Navbar from "@/components/navigation/navbar";
 
 const inter = localFont({
   src: "./fonts/InterVF.ttf",
-  variable: "--font-inter",
-  weight: "100 200 300 400 500 600 700 800 900",
+  variable: "--font-sans",
+  weight: "100 900",
 });
 
 const spaceGrotesk = localFont({
-  src: "./fonts/InterVF.ttf",
+  src: "./fonts/SpaceGroteskVF.ttf",
   variable: "--font-space-grotesk",
-  weight: "300 400 500 600 700 800 900",
+  weight: "300 700",
 });
 
 export const metadata: Metadata = {
@@ -30,8 +32,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.className} ${spaceGrotesk.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">{children}</body>
+    <html
+      suppressHydrationWarning
+      lang="en"
+      className={cn("h-full", "antialiased", "font-sans", inter.variable, spaceGrotesk.variable)}
+    >
+      <body className="flex min-h-full flex-col">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <Navbar />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
