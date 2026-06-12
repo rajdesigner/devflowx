@@ -40,13 +40,7 @@ export default async function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", "font-sans", inter.variable, spaceGrotesk.variable)}
     >
-      <link
-        rel="stylesheet"
-        type="text/css"
-        href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-      />
-
-      <body className="flex min-h-full flex-col">
+      <body suppressHydrationWarning className="flex min-h-full flex-col">
         <SessionProvider session={session}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             {children}

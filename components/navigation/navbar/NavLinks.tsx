@@ -15,17 +15,16 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
   return (
     <>
       {sidebarLinks.map((item) => {
-        const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;
+        const route = item.route === "/profile" && userId ? `${item.route}/${userId}` : item.route;
 
-        if (item.route === "/profile") {
-          if (userId) item.route = `${item.route}/${userId}`;
-          else return null;
-        }
+        if (item.route === "/profile" && !userId) return null;
+
+        const isActive = (pathname.includes(route) && route.length > 1) || pathname === route;
 
         const LinkComponent = (
           <Link
-            href={item.route}
-            key={item.label}
+            href={route}
+            key={route}
             className={cn(
               isActive ? "primary-gradient text-light-900 rounded-lg" : "text-dark300_light900",
               "flex items-center justify-start gap-4 bg-transparent p-4"
@@ -43,9 +42,9 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
         );
 
         return isMobileNav ? (
-          <SheetClose key={item.route}>{LinkComponent}</SheetClose>
+          <SheetClose key={route}>{LinkComponent}</SheetClose>
         ) : (
-          <React.Fragment key={item.route}>{LinkComponent}</React.Fragment>
+          <React.Fragment key={route}>{LinkComponent}</React.Fragment>
         );
       })}
     </>
