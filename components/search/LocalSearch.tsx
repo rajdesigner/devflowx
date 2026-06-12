@@ -11,7 +11,7 @@ interface Props {
   route: string;
   imgSrc: string;
   placeholder: string;
-  iconPosition: "left" | "right";
+  iconPosition?: "left" | "right";
   otherClasses?: string;
 }
 
