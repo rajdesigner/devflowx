@@ -44,3 +44,21 @@ export const SignUpSchema = z.object({
       message: "Password must contain at least one special character.",
     }),
 });
+
+export const askQuestionSchema = z.object({
+  title: z
+    .string()
+    .min(5, { message: "Title must be at least 5 characters long." })
+    .max(100, { message: "Title cannot exceed 100 characters." }),
+  content: z
+    .string()
+    .min(10, { message: "Description must be at least 10 characters long." })
+    .max(1000, { message: "Description cannot exceed 1000 characters." }),
+
+  tags: z
+    .array(
+      z.string().min(1, { message: "Tag cannot be empty." }).max(30, { message: "Tag cannot exceed 30 characters." })
+    )
+    .min(1, { message: "Please add at least one tag." })
+    .max(5, { message: "You can add up to 5 tags." }),
+});
