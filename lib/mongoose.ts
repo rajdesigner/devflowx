@@ -1,5 +1,4 @@
-import mongoose, { Mongoose} from 'mongoose'
-import { cache } from 'react';
+import mongoose, { Mongoose} from 'mongoose';
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if(!MONGODB_URI){
