@@ -1,96 +1,59 @@
 "use client"
 
 import * as React from "react"
-import { Menu } from "@base-ui/react/menu"
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 
 import { cn } from "@/lib/utils"
 
-type DropdownMenuTriggerProps = Menu.Trigger.Props & {
-  asChild?: boolean
-}
+const DropdownMenu = DropdownMenuPrimitive.Root
 
-type DropdownMenuContentProps = Menu.Popup.Props &
-  Pick<
-    Menu.Positioner.Props,
-    | "align"
-    | "alignOffset"
-    | "collisionBoundary"
-    | "collisionPadding"
-    | "side"
-    | "sideOffset"
-  >
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
 
-function DropdownMenu(props: Menu.Root.Props) {
-  return <Menu.Root {...props} />
-}
-
-function DropdownMenuTrigger({
-  asChild,
-  children,
-  ...props
-}: DropdownMenuTriggerProps) {
-  return (
-    <Menu.Trigger
-      render={asChild && React.isValidElement(children) ? children : undefined}
-      {...props}
-    >
-      {asChild ? undefined : children}
-    </Menu.Trigger>
-  )
-}
-
-function DropdownMenuContent({
-  className,
-  align = "center",
-  alignOffset,
-  collisionBoundary,
-  collisionPadding,
-  side = "bottom",
-  sideOffset = 4,
-  ...props
-}: DropdownMenuContentProps) {
-  return (
-    <Menu.Portal>
-      <Menu.Positioner
-        align={align}
-        alignOffset={alignOffset}
-        className="z-[100]"
-        collisionBoundary={collisionBoundary}
-        collisionPadding={collisionPadding}
-        side={side}
-        sideOffset={sideOffset}
-      >
-        <Menu.Popup
-          className={cn(
-            "z-[100] min-w-32 rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none",
-            "data-[starting-style]:scale-95 data-[ending-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
-            className
-          )}
-          {...props}
-        />
-      </Menu.Positioner>
-    </Menu.Portal>
-  )
-}
-
-function DropdownMenuItem({
-  className,
-  ...props
-}: Menu.Item.Props) {
-  return (
-    <Menu.Item
+const DropdownMenuContent = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => (
+  <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Content
+      ref={ref}
+      sideOffset={sideOffset}
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none",
-        "data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground",
-        "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className
       )}
       {...props}
     />
-  )
-}
+  </DropdownMenuPrimitive.Portal>
+))
+DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
 
-const DropdownMenuSeparator = Menu.Separator
+const DropdownMenuItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item>
+>(({ className, ...props }, ref) => (
+  <DropdownMenuPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      className
+    )}
+    {...props}
+  />
+))
+DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
+
+const DropdownMenuSeparator = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <DropdownMenuPrimitive.Separator
+    ref={ref}
+    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    {...props}
+  />
+))
+DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
 
 export {
   DropdownMenu,

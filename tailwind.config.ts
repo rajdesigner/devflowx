@@ -11,8 +11,30 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
           "100": "#FFF1E6",
           "500": "#FF7000",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         dark: {
           "100": "#000000",
@@ -29,6 +51,11 @@ const config: Config = {
           "850": "#FDFDFD",
           "900": "#FFFFFF",
         },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
       },
       boxShadow: {
         "light-100":
@@ -58,6 +85,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animante"), require("@tailwindcss/typography")]
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };
 export default config;
