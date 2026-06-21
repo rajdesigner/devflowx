@@ -6,6 +6,8 @@ import { LocalSearch } from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import handleError from "@/lib/handlers/error";
+import dbConnect from "@/lib/mongoose";
+import { ValidationError } from "@/lib/http-errors";
 
 const questions = [
   {
@@ -50,7 +52,10 @@ const questions = [
 
 const test = async() => {
   try{
-    throw new Error("test Error")
+    throw new ValidationError({
+      title: ["Required"],
+      tags: ['"Javascript" is not a valid bug']
+    })
   } catch(error){
     return handleError(error);
   }
@@ -61,7 +66,7 @@ interface SearchParams {
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
-
+  const error = await test();
   const { query = "", filter = "" } = await searchParams;
 
   const filteredQuestions = questions.filter((question) => {
