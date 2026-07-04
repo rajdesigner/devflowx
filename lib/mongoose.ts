@@ -1,10 +1,6 @@
-import mongoose, { Mongoose} from 'mongoose';
-import logger from './logger';
-const MONGODB_URI = process.env.MONGODB_URI as string;
-
-if(!MONGODB_URI){
-  throw new Error("MONGODB_URL is not defined")
-}
+import mongoose, { Mongoose } from "mongoose";
+import { RequestError } from "./http-errors";
+import logger from "./logger";
 
 interface MongooseCache{
   conn: Mongoose | null;
@@ -21,6 +17,48 @@ if(!cached){
   cached = global.mongoose = { conn: null, promise: null}
 }
 
+const redactMongoUri = (uri: string) => {
+  try {
+    const parsedUri = new URL(uri);
+
+    if (parsedUri.username) parsedUri.username = "***";
+    if (parsedUri.password) parsedUri.password = "***";
+
+    return parsedUri.toString();
+  } catch {
+    return "[invalid MongoDB URI]";
+  }
+};
+
+const getMongoDbUri = () => {
+  const uri = process.env.MONGODB_URI?.trim();
+
+  if (!uri) {
+    throw new RequestError(500, "MONGODB_URI is not defined");
+  }
+
+  let parsedUri: URL;
+
+  try {
+    parsedUri = new URL(uri);
+  } catch {
+    throw new RequestError(500, "MONGODB_URI is not a valid MongoDB connection string");
+  }
+
+  if (!["mongodb:", "mongodb+srv:"].includes(parsedUri.protocol)) {
+    throw new RequestError(500, "MONGODB_URI must start with mongodb:// or mongodb+srv://");
+  }
+
+  if (parsedUri.protocol === "mongodb+srv:" && !parsedUri.hostname.includes(".")) {
+    throw new RequestError(
+      500,
+      `MONGODB_URI has an invalid Atlas host: ${parsedUri.hostname}. Use the full cluster host, for example cluster0.xxxxx.mongodb.net`
+    );
+  }
+
+  return uri;
+};
+
 const dbConnect = async():Promise<Mongoose> => {
   if(cached.conn){
     logger.info('Using existing mongoose connection');
@@ -28,13 +66,16 @@ const dbConnect = async():Promise<Mongoose> => {
   } 
 
   if(!cached.promise){
-    cached.promise = mongoose.connect(MONGODB_URI, {
+    const mongoDbUri = getMongoDbUri();
+
+    cached.promise = mongoose.connect(mongoDbUri, {
       dbName: 'devflow'
     }).then((result)=>{
       logger.info('connected to Mongodb');
       return result;
     }).catch((error) => {
-      console.error('Error Connecting to MongoDb', error);
+      cached.promise = null;
+      logger.error({ err: error, uri: redactMongoUri(mongoDbUri) }, "Error connecting to MongoDB");
       throw error;
     })
   }
