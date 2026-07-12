@@ -1,11 +1,15 @@
 import { z } from "zod";
 
+const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+
+const passwordSchema = z
+  .string()
+  .min(6, { message: "Password must be at least 6 characters long" })
+  .max(100, { message: "Password must be less than 100 characters long" });
+
 export const signInSchema = z.object({
   email: z.string().min(1, { message: "Email is required" }).email("Please provide a valid email address"),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" })
-    .max(100, { message: "Password must be less than 100 characters long" }),
+  password: passwordSchema,
 });
 export const SignUpSchema = z.object({
   username: z
@@ -74,3 +78,14 @@ export const UserSchema = z.object({
   reputation: z.number().optional(),
 
 })
+
+export const AccountSchema = z.object({
+  userId: z
+    .string()
+    .regex(objectIdRegex, { message: "Please provide a valid user ID." }),
+  name: z.string().min(1, { message: "Name is required." }),
+  image: z.string().url({ message: "Please provide a valid image URL." }).optional(),
+  password: passwordSchema.optional(),
+  provider: z.string().min(1, { message: "Provider is required." }),
+  providerAccountId: z.string().min(1, { message: "Provider account ID is required." }),
+});

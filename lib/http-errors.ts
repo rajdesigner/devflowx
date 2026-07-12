@@ -26,7 +26,7 @@
         if(messages[0] === 'Required'){
           return `${fieldName} is required`;
         } else {
-          messages.join(" and ");
+          return messages.join(" and ");
         }
       })
       return formattedMessages.join(", ")
