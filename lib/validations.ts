@@ -89,3 +89,15 @@ export const AccountSchema = z.object({
   provider: z.string().min(1, { message: "Provider is required." }),
   providerAccountId: z.string().min(1, { message: "Provider account ID is required." }),
 });
+
+export const SignInWithOauthSchema = z.object({
+  provider: z.enum(["google", "github", "facebook"], { message: "Invalid provider. Must be one of: google, github, facebook." }),
+  providerAccountId: z.string().min(1, { message: "Provider account ID is required." }),
+  user: z.object({
+    name: z.string().min(1, { message: "Name is required." }),
+    username: z.string().min(3, { message: "Username must be at least 3 characters long." }),
+    email: z.string().email({ message: "Please provide a valid email address." }),
+    image: z.string().url({ message: "Please provide a valid image URL." }).optional(),
+    
+  })
+});
