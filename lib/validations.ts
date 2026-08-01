@@ -7,7 +7,7 @@ const passwordSchema = z
   .min(6, { message: "Password must be at least 6 characters long" })
   .max(100, { message: "Password must be less than 100 characters long" });
 
-export const signInSchema = z.object({
+export const SignInSchema = z.object({
   email: z.string().min(1, { message: "Email is required" }).email("Please provide a valid email address"),
   password: passwordSchema,
 });

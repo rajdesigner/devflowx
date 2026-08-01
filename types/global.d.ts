@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 
-interface Tag {
+export interface Tag {
   _id: string;
   name: string;
 }
 
-interface Author {
+export interface Author {
   _id: string;
   name: string;
   image: string;
 }
 
-interface Question {
+export interface Question {
   _id: string;
   title: string;
   tags: Tag[];
@@ -22,7 +22,7 @@ interface Question {
   views: number;
 }
 
-type ActionResponse<T = null> = {
+export type ActionResponse<T = null> = {
   success:boolean;
   data?: T;
   error?: {
@@ -32,8 +32,19 @@ type ActionResponse<T = null> = {
   status?: number;
 };
 
-type SuccessResponse<T = null> = ActionResponse<T> & { success: true};
-type ErrorResponse = ActionResponse<undefined> & { success: false};
+export type SuccessResponse<T = null> = ActionResponse<T> & { success: true};
+export type ErrorResponse = ActionResponse<undefined> & { success: false};
 
-type APIErrorResponse = NextResponse<ErrorResponse>;
-type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
+export type APIErrorResponse = NextResponse<ErrorResponse>;
+export type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
+
+declare global {
+  type Tag = import("@/types/global").Tag;
+  type Author = import("@/types/global").Author;
+  type Question = import("@/types/global").Question;
+  type ActionResponse<T = null> = import("@/types/global").ActionResponse<T>;
+  type SuccessResponse<T = null> = import("@/types/global").SuccessResponse<T>;
+  type ErrorResponse = import("@/types/global").ErrorResponse;
+  type APIErrorResponse = import("@/types/global").APIErrorResponse;
+  type APIResponse<T = null> = import("@/types/global").APIResponse<T>;
+}

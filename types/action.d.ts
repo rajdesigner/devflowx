@@ -8,3 +8,10 @@ interface SignInWithOauthParams {
   provider: 'github' | 'google';
   providerAccountId: string;
 }
+
+interface AuthCredentials {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+}
