@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { use, useRef } from "react";
-import { useForm } from "react-hook-form";
+import React, { useRef } from "react";
+import { type ControllerRenderProps, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { askQuestionSchema } from "@/lib/validations";
@@ -11,10 +11,12 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import dynamic from "next/dynamic";
 import TagCard from "../cards/TagCard";
 
+type QuestionFormValues = z.infer<typeof askQuestionSchema>;
+type TagsField = ControllerRenderProps<QuestionFormValues, "tags">;
 
 const QuestionForm = () => {
   const editorRef = useRef<MDXEditorMethods>(null)
-  const form = useForm<z.infer<typeof askQuestionSchema>>({
+  const form = useForm<QuestionFormValues>({
     resolver: zodResolver(askQuestionSchema),
     defaultValues: {
       title: "",
@@ -24,36 +26,36 @@ const QuestionForm = () => {
   });
 
   const Editor = dynamic(() => import('@/components/editor'), {
-  // Make sure we turn SSR off
-  ssr: false
-})
+    // Make sure we turn SSR off
+    ssr: false
+  })
 
-const handleTagRemove = (tag: string, field: any) => {
-  
-}
+  const handleTagRemove = (tag: string, field: TagsField) => {
+    field.onChange(field.value.filter((value) => value !== tag));
+  }
 
-const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: {value: string[]}) => {
-  if(e.key === 'Enter'){
-    e.preventDefault();
-    const tagInput = e.currentTarget.value.trim();
-    if(tagInput && tagInput.length < 15 && !field.value.includes(tagInput)){
-      form.setValue('tags', [...field.value, tagInput])
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: TagsField) => {
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      const tagInput = e.currentTarget.value.trim();
+      if(tagInput && tagInput.length < 15 && !field.value.includes(tagInput)){
+        form.setValue('tags', [...field.value, tagInput])
 
-      e.currentTarget.value = '';
-      form.clearErrors("tags")
-    } else if(tagInput.length > 15){
-      form.setError('tags', {
-        type: 'manual',
-        message: 'Tags should be less than 15 characters'
-      })
-    } else if(field.value.includes(tagInput)){
-      form.setError('tags', {
-        type: 'manual',
-        message: 'Tag already exists'
-      })
+        e.currentTarget.value = '';
+        form.clearErrors("tags")
+      } else if(tagInput.length > 15){
+        form.setError('tags', {
+          type: 'manual',
+          message: 'Tags should be less than 15 characters'
+        })
+      } else if(field.value.includes(tagInput)){
+        form.setError('tags', {
+          type: 'manual',
+          message: 'Tag already exists'
+        })
+      }
     }
   }
-}
 
   const handleCreateQuestion = () => {
   }

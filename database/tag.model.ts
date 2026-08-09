@@ -1,9 +1,9 @@
   
-import { Schema, models, model, Types } from "mongoose";
+import { Schema, models, model } from "mongoose";
 
 export interface ITag{
   name: string,
-  questions: Number
+  questions: number
 }
 
 const TagSchema = new Schema<ITag>({
